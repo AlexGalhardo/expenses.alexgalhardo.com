@@ -23,7 +23,7 @@ import { TOTAL_EXPENSES_PER_PAGE } from "../Utils/Envs";
 export default function Home() {
     const [account, setAccount] = useState<any>("");
 
-	console.log('\n\n expensesJson.transactions => ', expensesJson.transactions)
+    console.log('\n\n expensesJson.transactions => ', expensesJson.transactions)
 
     const [suggestions, setSuggestions] = useState<ExpenseTransaction[]>([]);
     const [transactions, setTransactions] = useState<any>(expensesJson.transactions);
@@ -255,12 +255,12 @@ export default function Home() {
 
                     if (
                         searchCategory === "ALL" &&
-                        dateFormatedTimestamp >= new Date(searchStartDate).getTime() &&
-                        dateFormatedTimestamp <= new Date(searchFinalDate).getTime()
+                            dateFormatedTimestamp >= new Date(searchStartDate).getTime() &&
+                            dateFormatedTimestamp <= new Date(searchFinalDate).getTime()
                             ? true
                             : account.transactions[i].category === searchCategory &&
-                              dateFormatedTimestamp >= new Date(searchStartDate).getTime() &&
-                              dateFormatedTimestamp <= new Date(searchFinalDate).getTime()
+                            dateFormatedTimestamp >= new Date(searchStartDate).getTime() &&
+                            dateFormatedTimestamp <= new Date(searchFinalDate).getTime()
                     ) {
                         transactionsFound.push(account.transactions[i]);
                     }
@@ -378,8 +378,8 @@ export default function Home() {
                                     onChange={handleExpenseCategory}
                                     required
                                 >
-									<option selected>Chose a Category</option>
-									<option className="text-danger fw-bold" value="FOOD">
+                                    <option selected>Choose a Category</option>
+                                    <option className="text-danger fw-bold" value="FOOD">
                                         FOOD
                                     </option>
                                     <option className="text-danger fw-bold" value="SUBSCRIPTIONS">
@@ -543,8 +543,8 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_subscriptions /
-                                                              account.total_expenses) *
-                                                              100
+                                                            account.total_expenses) *
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -571,7 +571,7 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_clothes / account.total_expenses) *
-                                                              100
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -585,8 +585,8 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_entertainment /
-                                                              account.total_expenses) *
-                                                              100
+                                                            account.total_expenses) *
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -600,7 +600,7 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_education / account.total_expenses) *
-                                                              100
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -614,7 +614,7 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_transport / account.total_expenses) *
-                                                              100
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -641,7 +641,7 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_services / account.total_expenses) *
-                                                              100
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
@@ -681,7 +681,7 @@ export default function Home() {
                                                 {transformToFixedTwo(
                                                     account.total_expenses
                                                         ? (account.total_expenses_going_out / account.total_expenses) *
-                                                              100
+                                                        100
                                                         : 0,
                                                 )}
                                             </td>
