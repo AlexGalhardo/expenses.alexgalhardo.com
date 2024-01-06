@@ -722,19 +722,19 @@ export default function Home() {
                             <div className="d-flex justify-content-between mb-3">
                                 <div className="card bg-success">
                                     <div className="card-body text-center">
-                                        <h5 className="card-title fw-bold text-white fs-4">USD: R$ {dolar}</h5>
+                                        <h5 className="card-title fw-bold text-white fs-3">USD: R$ {dolar}</h5>
                                     </div>
                                 </div>
 
                                 <div className="card bg-primary">
                                     <div className="card-body text-center">
-                                        <h5 className="card-title fw-bold text-white fs-4">EUR: R$ {euro}</h5>
+                                        <h5 className="card-title fw-bold text-white fs-3">EUR: R$ {euro}</h5>
                                     </div>
                                 </div>
 
                                 <div className="card bg-warning">
                                     <div className="card-body text-center">
-                                        <h5 className="card-title fw-bold text-black fs-4">BTC: R$ {bitcoin}</h5>
+                                        <h5 className="card-title fw-bold text-black fs-3">BTC: R$ {bitcoin}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -888,7 +888,7 @@ export default function Home() {
 
                             {noTransactionsFound && (
                                 <div className="alert alert-warning mt-3 text-center fw-bold fs-4" role="alert">
-                                    Porra
+                                    No transactions found...
                                 </div>
                             )}
 
