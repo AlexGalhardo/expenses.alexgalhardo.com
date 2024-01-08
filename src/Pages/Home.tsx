@@ -378,7 +378,6 @@ export default function Home() {
                                     onChange={handleExpenseCategory}
                                     required
                                 >
-                                    <option selected>Choose a Category</option>
                                     <option className="text-danger fw-bold" value="FOOD">
                                         FOOD
                                     </option>
