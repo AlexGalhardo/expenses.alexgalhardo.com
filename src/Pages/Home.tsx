@@ -23,10 +23,8 @@ import { TOTAL_EXPENSES_PER_PAGE } from "../Utils/Envs";
 export default function Home() {
     const [account, setAccount] = useState<any>("");
 
-    console.log("\n\n expensesJson.transactions => ", expensesJson.transactions);
-
     const [suggestions, setSuggestions] = useState<ExpenseTransaction[]>([]);
-    const [transactions, setTransactions] = useState<any>(expensesJson.transactions);
+    const [transactions, setTransactions] = useState<any>([]);
     const [transactionsByDate, setTransactionsByDate] = useState<any>();
     const [pageOffset, setPageOffset] = useState(0);
     const [pageCount, setPageCount] = useState(0);
@@ -304,7 +302,6 @@ export default function Home() {
             const workbook = xlsx.read(data, { type: "array" });
             const sheet_name_list = workbook.SheetNames;
             const dados: Dados[] = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-            console.log(dados);
 
             setAccountLocalStorage(
                 dados,
@@ -401,9 +398,6 @@ export default function Home() {
                                     </option>
                                     <option className="text-danger fw-bold" value="HOUSE">
                                         HOUSE
-                                    </option>
-                                    <option className="text-danger fw-bold" value="SERVICES">
-                                        SERVICES
                                     </option>
                                     <option className="text-danger fw-bold" value="GIFTS">
                                         GIFTS
@@ -633,20 +627,6 @@ export default function Home() {
                                         </tr>
                                         <tr>
                                             <th>
-                                                <i className="bi bi-tools"></i> Services
-                                            </th>
-                                            <td>R$ {transformToBRL(account.total_expenses_services)}</td>
-                                            <td>
-                                                {transformToFixedTwo(
-                                                    account.total_expenses
-                                                        ? (account.total_expenses_services / account.total_expenses) *
-                                                              100
-                                                        : 0,
-                                                )}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>
                                                 <i className="bi bi-gift"></i> Gifts
                                             </th>
                                             <td>R$ {transformToBRL(account.total_expenses_gifts)}</td>
@@ -864,25 +844,27 @@ export default function Home() {
                             )}
 
                             {!noTransactionsFound && (
-                                <ReactPaginate
-                                    previousLabel="Previous"
-                                    nextLabel="Next"
-                                    pageClassName="page-item"
-                                    pageLinkClassName="page-link"
-                                    previousClassName="page-item"
-                                    previousLinkClassName="page-link"
-                                    nextClassName="page-item"
-                                    nextLinkClassName="page-link"
-                                    breakLabel="..."
-                                    breakClassName="page-item"
-                                    breakLinkClassName="page-link"
-                                    pageCount={pageCount}
-                                    pageRangeDisplayed={TOTAL_EXPENSES_PER_PAGE}
-                                    onPageChange={handlePageChange}
-                                    containerClassName="pagination"
-                                    activeClassName="active"
-                                    forcePage={pageOffset}
-                                />
+                                <div style={{ overflowX: "hidden" }}>
+                                    <ReactPaginate
+                                        previousLabel="Previous"
+                                        nextLabel="Next"
+                                        pageClassName="page-item"
+                                        pageLinkClassName="page-link"
+                                        previousClassName="page-item"
+                                        previousLinkClassName="page-link"
+                                        nextClassName="page-item"
+                                        nextLinkClassName="page-link"
+                                        breakLabel="..."
+                                        breakClassName="page-item"
+                                        breakLinkClassName="page-link"
+                                        pageCount={pageCount}
+                                        pageRangeDisplayed={TOTAL_EXPENSES_PER_PAGE}
+                                        onPageChange={handlePageChange}
+                                        containerClassName="pagination"
+                                        activeClassName="active"
+                                        forcePage={pageOffset}
+                                    />
+                                </div>
                             )}
 
                             {noTransactionsFound && (

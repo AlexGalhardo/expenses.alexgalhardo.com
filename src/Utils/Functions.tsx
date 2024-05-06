@@ -47,8 +47,7 @@ export function transformToBRL(amount: number) {
 
 export function getDateTimeBrazil() {
     let date = new Date().toLocaleDateString("pt-BR");
-    let time = new Date().toLocaleTimeString("pt-BR");
-    return `${date} ${time}`;
+    return `${date}`;
 }
 
 export function transformToFixedTwo(value: number) {
@@ -152,187 +151,139 @@ export function setAccountLocalStorage(
     setPageOffset: any,
     setTotalTransactions: any,
 ) {
-    const Account: Account = {
+    const Account: any = {
         total_expenses: 0,
-
         total_expenses_food: 0,
         total_expenses_food_percentage: 0,
-
         total_expenses_subscriptions: 0,
         total_expenses_subscriptions_percentage: 0,
-
         total_expenses_shop: 0,
         total_expenses_shop_percentage: 0,
-
         total_expenses_clothes: 0,
         total_expenses_clothes_percentage: 0,
-
         total_expenses_entertainment: 0,
         total_expenses_entertainment_percentage: 0,
-
         total_expenses_education: 0,
         total_expenses_education_percentage: 0,
-
         total_expenses_transport: 0,
         total_expenses_transport_percentage: 0,
-
         total_expenses_house: 0,
         total_expenses_house_percentage: 0,
-
         total_expenses_services: 0,
         total_expenses_services_percentage: 0,
-
         total_expenses_gifts: 0,
         total_expenses_gifts_percentage: 0,
-
         total_expenses_health: 0,
         total_expenses_health_percentage: 0,
-
         total_expenses_going_out: 0,
         total_expenses_going_out_percentage: 0,
-
         total_expenses_work: 0,
         total_expenses_work_percentage: 0,
-
         total_expenses_rent: 0,
         total_expenses_rent_percentage: 0,
-
         transactions: [],
     };
 
-    function getTimeBrazil() {
-        let time = new Date().toLocaleTimeString("pt-BR");
-        return `${time}`;
+    function getCategory(category: string) {
+        const categoryMap: { [key: string]: string } = {
+            Alimentação: "FOOD",
+            Mercado: "FOOD",
+            Casa: "HOUSE",
+            "Lazer e hobbies": "ENTERTAINMENT",
+            "Assinaturas e serviços": "SUBSCRIPTIONS",
+            Transporte: "TRANSPORT",
+            Roupas: "CLOTHES",
+            Educação: "EDUCATION",
+            Compras: "SHOP",
+            "Presentes e doações": "GIFTS",
+            Saúde: "HEALTH",
+            "Bares e restaurantes": "GOING_OUT",
+            Trabalho: "WORK",
+            Aluguel: "RENT",
+        };
+        return categoryMap[category] || "NOT_FOUND";
     }
 
-    function getCategory(category: string) {
-        if (category === "Alimentação" || category === "Mercado") return "FOOD";
-        if (category === "Casa") return "HOUSE";
-        if (category === "Lazer e hobbies") return "ENTERTAINMENT";
-        if (category === "Assinaturas e serviços") return "SUBSCRIPTIONS";
-        if (category === "Transporte") return "TRANSPORT";
-        if (category === "Roupas") return "CLOTHES";
-        if (category === "Educação") return "EDUCATION";
-        if (category === "Compras") return "SHOP";
-        if (category === "Presentes e doações") return "GIFTS";
-        if (category === "Saúde") return "HEALTH";
-        if (category === "Bares e restaurantes") return "GOING_OUT";
-        if (category === "Trabalho") return "WORK";
-        if (category === "Aluguel") return "RENT";
-        return "NOT_FOUND";
+    function updateExpenses(category: string, amount: number) {
+        const categoryKey = `total_expenses_${category.toLowerCase()}`;
+        const percentageKey = `${category.toLowerCase()}_percentage`;
+
+        Account[categoryKey] += amount;
+        Account[percentageKey] = ((Account[categoryKey] / Account.total_expenses) * 100).toFixed(2) + " %";
     }
 
     for (let i = 1; i < dados.length; i++) {
-        if (
-            dados[i].Valor < 0 &&
-            dados[i].Categoria !== "Pagamento de fatura" &&
-            dados[i].Categoria !== "Outros" &&
-            dados[i].Categoria !== "Investimentos" &&
-            dados[i].Categoria !== "Outras receitas"
-        ) {
-            const amount = Math.ceil(Math.abs(dados[i].Valor)) * 100;
+        const amount = Math.ceil(Math.abs(dados[i].Valor)) * 100;
+        const category = getCategory(dados[i].Categoria);
+        updateExpenses(category, amount);
 
-            console.log(`amount: ${amount} => SOMA: ${(Account.total_expenses += amount)}`);
-
-            if (dados[i].Categoria === "Alimentação") Account.total_expenses_food += amount;
-            if (dados[i].Categoria === "Casa") Account.total_expenses_house += amount;
-            if (dados[i].Categoria === "Lazer e hobbies") Account.total_expenses_entertainment += amount;
-            if (dados[i].Categoria === "Assinaturas e serviços") Account.total_expenses_subscriptions += amount;
-            if (dados[i].Categoria === "Transporte") Account.total_expenses_transport += amount;
-            if (dados[i].Categoria === "Roupas") Account.total_expenses_clothes += amount;
-            if (dados[i].Categoria === "Educação") Account.total_expenses_education += amount;
-            if (dados[i].Categoria === "Compras") Account.total_expenses_shop += amount;
-            if (dados[i].Categoria === "Presentes e doações") Account.total_expenses_gifts += amount;
-            if (dados[i].Categoria === "Saúde") Account.total_expenses_health += amount;
-            if (dados[i].Categoria === "Bares e restaurantes") Account.total_expenses_going_out += amount;
-            if (dados[i].Categoria === "Trabalho") Account.total_expenses_work += amount;
-            if (dados[i].Categoria === "Aluguel") Account.total_expenses_rent += amount;
-
-            Account.transactions.push({
-                id: uuidv4(),
-                created_at: `${dados[i].Data.replace(".", "/").replace(".", "/")} ${getTimeBrazil()}`,
-                category: getCategory(dados[i].Categoria),
-                description: `${dados[i].Descrição}`,
-                amount: amount,
-            });
-        }
+        Account.transactions.push({
+            id: uuidv4(),
+            created_at: `${dados[i].Data.replace(".", "/").replace(".", "/")}`,
+            category: category,
+            description: `${dados[i].Descrição}`,
+            amount: amount,
+        });
     }
 
-    Account.total_expenses_food_percentage = `${((Account.total_expenses_food / Account.total_expenses) * 100).toFixed(
-        2,
-    )} %`;
-
-    Account.total_expenses_subscriptions_percentage = `${(
-        (Account.total_expenses_subscriptions / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_shop_percentage = `${((Account.total_expenses_shop / Account.total_expenses) * 100).toFixed(
-        2,
-    )} %`;
-
-    Account.total_expenses_clothes_percentage = `${(
-        (Account.total_expenses_clothes / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_entertainment_percentage = `${(
-        (Account.total_expenses_entertainment / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_education_percentage = `${(
-        (Account.total_expenses_education / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_transport_percentage = `${(
-        (Account.total_expenses_transport / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_house_percentage = `${(
-        (Account.total_expenses_house / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_services_percentage = `${(
-        (Account.total_expenses_services / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_gifts_percentage = `${(
-        (Account.total_expenses_gifts / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_health_percentage = `${(
-        (Account.total_expenses_health / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_going_out_percentage = `${(
-        (Account.total_expenses_going_out / Account.total_expenses) *
-        100
-    ).toFixed(2)} %`;
-
-    Account.total_expenses_work_percentage = `${((Account.total_expenses_work / Account.total_expenses) * 100).toFixed(
-        2,
-    )} %`;
-
-    Account.total_expenses_rent_percentage = `${((Account.total_expenses_rent / Account.total_expenses) * 100).toFixed(
-        2,
-    )} %`;
-
+    delete Account.total_expenses_not_found;
     Account.transactions.reverse();
 
-    window.localStorage.setItem("account", JSON.stringify(Account, null, 4));
+    const categories = {
+        FOOD: "Alimentação",
+        HOUSE: "Casa",
+        ENTERTAINMENT: "Lazer e hobbies",
+        SUBSCRIPTIONS: "Assinaturas e serviços",
+        TRANSPORT: "Transporte",
+        CLOTHES: "Roupas",
+        EDUCATION: "Educação",
+        SHOP: "Compras",
+        GIFTS: "Presentes e doações",
+        HEALTH: "Saúde",
+        GOING_OUT: "Bares e restaurantes",
+        WORK: "Trabalho",
+        RENT: "Aluguel",
+    };
 
-    console.log(Account);
+    const totalExpenses = Object.values(Account).reduce((acc: number, val: any) => {
+        if (typeof val === "number" && !isNaN(val)) {
+            return acc + val;
+        }
+        return acc;
+    }, 0);
 
-    setAccount(Account);
-    setTransactions(iterateFromIndex(Account.transactions, 0));
-    setPageCount(Math.ceil(Account.transactions.length / TOTAL_EXPENSES_PER_PAGE));
+    Object.entries(Account)
+        .filter(([key]) => key.startsWith("total_expenses_"))
+        .forEach(([key, value]: [string, any]) => {
+            const category = key.replace("total_expenses_", "");
+            if (category !== "not_found") {
+                const percentage = ((value / totalExpenses) * 100).toFixed(2) + " %";
+                Account[`total_expenses_${category}_percentage`] = percentage;
+            }
+        });
+
+    const sortedCategories = Object.keys(categories).sort((a, b) => {
+        const percentageA = parseFloat(Account[`total_expenses_${a.toLowerCase()}_percentage`]);
+        const percentageB = parseFloat(Account[`total_expenses_${b.toLowerCase()}_percentage`]);
+        return percentageB - percentageA;
+    });
+
+    const expensesJson = {
+        total_expenses: totalExpenses,
+        ...sortedCategories.reduce((acc: any, category) => {
+            const categoryKey = category.toLowerCase();
+            acc[`total_expenses_${categoryKey}`] = Account[`total_expenses_${categoryKey}`];
+            acc[`total_expenses_${categoryKey}_percentage`] = Account[`total_expenses_${categoryKey}_percentage`];
+            return acc;
+        }, {}),
+        transactions: Account.transactions,
+    };
+
+    window.localStorage.setItem("account", JSON.stringify(expensesJson, null, 4));
+
+    setAccount(expensesJson);
+    setTransactions(iterateFromIndex(expensesJson.transactions, 0));
+    setPageCount(Math.ceil(expensesJson.transactions.length / TOTAL_EXPENSES_PER_PAGE));
     setPageOffset(0);
-    setTotalTransactions(Account.transactions.length);
+    setTotalTransactions(expensesJson.transactions.length);
 }
